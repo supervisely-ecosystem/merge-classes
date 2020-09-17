@@ -61,12 +61,12 @@
                     {{row.shape}}
                 </div>
             </el-table-column>
-            <el-table-column prop="convertTo" label="convert to">
+            <el-table-column prop="mergeWith" label="merge with">
                 <template slot-scope="{ row }">
                     <el-select v-model="state.selectors[row.name]"
-                               :disabled="data.started === true || row.convertTo.length === 1">
+                               :disabled="data.started === true || row.mergeWith.length === 1">
                         <el-option
-                                v-for="item in row.convertTo"
+                                v-for="item in row.mergeWith"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">

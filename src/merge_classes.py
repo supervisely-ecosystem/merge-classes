@@ -35,7 +35,6 @@ def init_data_and_state(api: sly.Api):
     ORIGINAL_META = sly.ProjectMeta.from_json(meta_json)
 
     for obj_class in ORIGINAL_META.obj_classes:
-        obj_class: sly.ObjClass
         row = {
             "name": obj_class.name,
             "color": sly.color.rgb2hex(obj_class.color),
@@ -43,14 +42,16 @@ def init_data_and_state(api: sly.Api):
             "shapeIcon": SHAPE_TO_ICON.get(obj_class.geometry_type, UNKNOWN_ICON)
         }
 
-        possible_shapes = [{"value": REMAIN_UNCHANGED, "label": REMAIN_UNCHANGED}]
-        transforms = obj_class.geometry_type.allowed_transforms()
-        for g in transforms:
-            possible_shapes.append({"value": g.geometry_name(), "label": g.geometry_name()})
+        possible_classes = [{"value": REMAIN_UNCHANGED, "label": REMAIN_UNCHANGED}]
+        for dest_class in ORIGINAL_META.obj_classes:
+            if obj_class.name == dest_class.name or obj_class.geometry_type != dest_class.geometry_type:
+                continue
+            else:
+                possible_classes.append({"value": dest_class.name, "label": dest_class.name})
 
-        sly.logger.debug("{!r} -> {}".format(obj_class.geometry_type.geometry_name(), possible_shapes))
+        sly.logger.debug("{!r} -> {}".format(obj_class.name, possible_classes))
 
-        row["convertTo"] = possible_shapes
+        row["mergeWith"] = possible_classes
         state["selectors"][obj_class.name] = REMAIN_UNCHANGED
         table.append(row)
 
@@ -68,6 +69,10 @@ def convert_annotation(ann: sly.Annotation, dst_meta):
             converted_labels = lbl.convert(new_cls)
             new_labels.extend(converted_labels)
     return ann.clone(labels=new_labels)
+
+
+def validate_merging():
+    pass
 
 
 @my_app.callback("convert")
