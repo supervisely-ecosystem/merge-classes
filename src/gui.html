@@ -88,7 +88,9 @@
     <el-dialog :visible.sync="state.showFinishDialog" size="tiny" title='Finished'>
         <span>Project has been successfully created: <br> {{data.resultProject}} </span>
         <span class="dialog-footer" slot="footer">
-            <el-button @click="state.showFinishDialog = false" type="primary">OK</el-button>
+            <a :href="`/projects/${data.resultProjectId}/datasets`" target="blank">
+                <el-button @click="state.showFinishDialog = false" type="primary">Open project in new tab</el-button>
+            </a>
         </span>
     </el-dialog>
 </div>
