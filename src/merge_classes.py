@@ -1,6 +1,5 @@
 import os
 import supervisely_lib as sly
-from supervisely_lib.annotation.json_geometries_map import GET_GEOMETRY_FROM_STR
 
 my_app = sly.AppService()
 
@@ -11,7 +10,7 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 ORIGINAL_META = None
 REMAIN_UNCHANGED = "remain unchanged"
 
-_SUFFIX = "(new shapes)"
+_SUFFIX = "(merged classes)"
 
 SHAPE_TO_ICON = {
     sly.Rectangle: {"icon": "zmdi zmdi-crop-din", "color": "#ea9d22", "bg": "#fcefd9"},
@@ -135,7 +134,7 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
             ann_infos = api.annotation.download_batch(ds_info.id, img_ids)
             anns = [sly.Annotation.from_json(x.annotation, src_meta) for x in ann_infos]
 
-            new_anns = [convert_annotation(ann, dst_meta) for ann in anns]
+            new_anns = [convert_annotation(ann, dst_meta, selectors) for ann in anns]
 
             new_img_infos = api.image.upload_ids(dst_dataset.id, img_names, img_ids, metas=img_metas)
             new_img_ids = [x.id for x in new_img_infos]
