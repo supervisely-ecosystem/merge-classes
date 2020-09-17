@@ -11,6 +11,8 @@ PROJECT_ID = int(os.environ['modal.state.slyProjectId'])
 ORIGINAL_META = None
 REMAIN_UNCHANGED = "remain unchanged"
 
+_SUFFIX = "(new shapes)"
+
 SHAPE_TO_ICON = {
     sly.Rectangle: {"icon": "zmdi zmdi-crop-din", "color": "#ea9d22", "bg": "#fcefd9"},
     sly.Bitmap: {"icon": "zmdi zmdi-brush", "color": "#ff8461", "bg": "#ffebe3"},
@@ -59,20 +61,15 @@ def init_data_and_state(api: sly.Api):
     return data, state
 
 
-def convert_annotation(ann: sly.Annotation, dst_meta):
+def convert_annotation(ann: sly.Annotation, dst_meta, selectors):
     new_labels = []
     for lbl in ann.labels:
-        new_cls = dst_meta.obj_classes.get(lbl.obj_class.name)
-        if lbl.obj_class.geometry_type == new_cls.geometry_type:
+        dst_name = selectors[lbl.obj_class.name]
+        if dst_name == REMAIN_UNCHANGED:
             new_labels.append(lbl)
         else:
-            converted_labels = lbl.convert(new_cls)
-            new_labels.extend(converted_labels)
+            new_labels.append(lbl.clone(obj_class=dst_meta.get_obj_class(dst_name)))
     return ann.clone(labels=new_labels)
-
-
-def validate_merging():
-    pass
 
 
 @my_app.callback("convert")
@@ -92,17 +89,18 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
     src_meta_json = api.project.get_meta(src_project.id)
     src_meta = sly.ProjectMeta.from_json(src_meta_json)
 
-    new_classes = []
+    dst_meta = src_meta.clone(obj_classes=sly.ObjClassCollection())
     need_action = False
     selectors = state["selectors"]
     for cls in src_meta.obj_classes:
-        cls: sly.ObjClass
-        dest = selectors[cls.name]
-        if dest == REMAIN_UNCHANGED:
-            new_classes.append(cls)
+        dst_name = selectors[cls.name]
+        if dst_name == REMAIN_UNCHANGED:
+            dst_cls = cls.clone()
         else:
             need_action = True
-            new_classes.append(cls.clone(geometry_type=GET_GEOMETRY_FROM_STR(dest)))
+            dst_cls = src_meta.get_obj_class(dst_name).clone()
+        if dst_meta.get_obj_class(dst_cls.name) is None:
+            dst_meta = dst_meta.add_obj_class(dst_cls)
 
     if need_action is False:
         fields = [
@@ -118,19 +116,16 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
         api.task.set_fields(task_id, fields)
         return
 
-    dst_project = api.project.create(src_project.workspace_id, src_project.name + "(new shapes)",
-                                     description="new shapes",
-                                     change_name_if_conflict=True)
+    dst_name = src_project.name if _SUFFIX in src_project.name else src_project.name + _SUFFIX
+    dst_project = api.project.create(src_project.workspace_id, dst_name, description=_SUFFIX, change_name_if_conflict=True)
     sly.logger.info('Destination project is created.',
                     extra={'project_id': dst_project.id, 'project_name': dst_project.name})
-    dst_meta = src_meta.clone(obj_classes=sly.ObjClassCollection(new_classes))
     api.project.update_meta(dst_project.id, dst_meta.to_json())
 
     total_progress = api.project.get_images_count(src_project.id)
     current_progress = 0
     ds_progress = sly.Progress('Processing:', total_cnt=total_progress)
     for ds_info in api.dataset.get_list(src_project.id):
-
         dst_dataset = api.dataset.create(dst_project.id, ds_info.name)
         img_infos_all = api.image.get_list(ds_info.id)
 
@@ -147,7 +142,7 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
             api.annotation.upload_anns(new_img_ids, new_anns)
 
             current_progress += len(img_infos)
-            api.task.set_field(task_id, "data.progress", int(total_progress * 100 / current_progress))
+            api.task.set_field(task_id, "data.progress", int(current_progress * 100 / total_progress))
             ds_progress.iters_done_report(len(img_infos))
 
     api.task.set_output_project(task_id, dst_project.id, dst_project.name)
