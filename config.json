@@ -1,0 +1,22 @@
+{
+  "name": "Merge classes",
+  "type": "app",
+  "categories": [
+    "project classes",
+    "converter"
+  ],
+  "description": "Merge multiple classes with same shape to a single one",
+  "docker_image": "docker.deepsystems.io/supervisely/five/base-py-sdk-internal:apps",
+  "main_script": "src/merge_classes.py",
+  "gui_template": "src/gui.html",
+  "modal_template": "src/modal.html",
+  "task_location": "workspace_tasks",
+  "isolate": true,
+  "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
+  "icon_background": "#34495E",
+  "icon_cover": true,
+  "context_menu": {
+    "target": ["images_project"],
+    "context_category": "Converter"
+  }
+}

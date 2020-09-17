@@ -1,0 +1,93 @@
+<div id="app_convert_class_shape">
+    <sly-style>
+        #app_convert_class_shape .color-icon {
+        display:inline-block;
+        border-radius:50%;
+        background: red;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        }
+
+        #app_convert_class_shape .shape-icon {
+        display:inline-block;
+        background-color: #ffebe3;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        line-height: 32px;
+        font-size: 16px;
+        color: #ff8461;
+        text-align: center;
+        margin-right: 5px;
+        }
+
+        #app_convert_class_shape .shape-icon .icons8-polygon {
+        font-size: 8px;
+        }
+
+        #app_convert_class_shape .icon-cell {
+        display: flex;
+        align-items: center;
+        }
+    </sly-style>
+
+    <sly-card v-if="data.started === true" style="margin-bottom: 10px">
+        <el-progress :percentage="data.progress"></el-progress>
+    </sly-card>
+
+    <sly-card title="Shapes transformation" subtitle="Define destination shapes for one or several classes">
+        <div slot="header">
+            <el-button type="primary" @click="command('convert')" :disabled="data.started === true">
+                <i class="zmdi zmdi-play" style="margin-right: 5px"></i> Run
+            </el-button>
+        </div>
+        <el-table class="ultra-table"
+                  :data="data.table"
+                  style="width: 100%"
+                  :default-sort="{prop: 'name', order: 'ascending'}">
+            <el-table-column prop="name" label="Name" sortable width="180"></el-table-column>
+            <el-table-column prop="color" label="Color" width="180">
+                <template slot-scope="{ row }">
+                    <b class="color-icon" :style="{background: row.color}"></b>{{row.color}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="shape" label="Shape" width="180">
+                <div slot-scope="{ row }" class="icon-cell">
+                    <div class="shape-icon"
+                         :style="{'background-color':row.shapeIcon.bg, 'color': row.shapeIcon.color}">
+                        <i :class="[row.shapeIcon.icon]"></i>
+                    </div>
+                    {{row.shape}}
+                </div>
+            </el-table-column>
+            <el-table-column prop="convertTo" label="convert to">
+                <template slot-scope="{ row }">
+                    <el-select v-model="state.selectors[row.name]"
+                               :disabled="data.started === true || row.convertTo.length === 1">
+                        <el-option
+                                v-for="item in row.convertTo"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </template>
+            </el-table-column>
+        </el-table>
+    </sly-card>
+
+    <el-dialog :visible.sync="state.showWarningDialog" size="tiny" title="Warning">
+        <span>Please, define at least one transformation</span>
+        <span class="dialog-footer" slot="footer">
+            <el-button @click="state.showWarningDialog = false" type="primary">OK</el-button>
+        </span>
+    </el-dialog>
+
+    <el-dialog :visible.sync="state.showFinishDialog" size="tiny" title='Finished'>
+        <span>Project has been successfully created: <br> {{data.resultProject}} </span>
+        <span class="dialog-footer" slot="footer">
+            <el-button @click="state.showFinishDialog = false" type="primary">OK</el-button>
+        </span>
+    </el-dialog>
+</div>
