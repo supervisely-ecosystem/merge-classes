@@ -13,7 +13,7 @@
   "task_location": "workspace_tasks",
   "isolate": true,
   "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
-  "icon_background": "#34495E",
+  "icon_background": "#1208EA",
   "icon_cover": false,
   "context_menu": {
     "target": ["images_project"],
