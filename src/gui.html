@@ -36,7 +36,7 @@
         <el-progress :percentage="data.progress"></el-progress>
     </sly-card>
 
-    <sly-card title="Shapes transformation" subtitle="Define destination shapes for one or several classes">
+    <sly-card title="Merge classes" subtitle="Define how to merge one or several classes (be careful with circular dependency)">
         <div slot="header">
             <el-button type="primary" @click="command('convert')" :disabled="data.started === true">
                 <i class="zmdi zmdi-play" style="margin-right: 5px"></i> Run
