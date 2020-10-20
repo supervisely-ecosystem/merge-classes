@@ -6,7 +6,7 @@
     "converter"
   ],
   "description": "Merge multiple classes with same shape to a single one",
-  "docker_image": "docker.deepsystems.io/supervisely/five/base-py-sdk-internal:apps",
+  "docker_image": "docker.deepsystems.io/supervisely/five/base-py-sdk-internal:apps2",
   "main_script": "src/merge_classes.py",
   "gui_template": "src/gui.html",
   "modal_template": "src/modal.html",
@@ -14,9 +14,8 @@
   "isolate": true,
   "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
   "icon_background": "#1208EA",
-  "icon_cover": false,
   "context_menu": {
     "target": ["images_project"],
-    "context_category": "Converter"
+    "context_category": "Transform"
   }
 }

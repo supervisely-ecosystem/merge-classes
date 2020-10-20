@@ -57,6 +57,11 @@ def init_data_and_state(api: sly.Api):
         table.append(row)
 
     data["table"] = table
+
+    data["projectId"] = PROJECT_ID
+    project = api.project.get_info_by_id(PROJECT_ID)
+    data["projectName"] = project.name
+    data["projectPreviewUrl"] = api.image.preview_url(project.reference_image_url, 100, 100)
     return data, state
 
 
@@ -146,11 +151,9 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
 
     api.task.set_output_project(task_id, dst_project.id, dst_project.name)
 
+    # to get correct "reference_image_url"
+    res_project = api.project.get_info_by_id(dst_project.id)
     fields = [
-        {
-            "field": "state.showFinishDialog",
-            "payload": True
-        },
         {
             "field": "data.resultProject",
             "payload": dst_project.name,
@@ -158,6 +161,10 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
         {
             "field": "data.resultProjectId",
             "payload": dst_project.id,
+        },
+        {
+            "field": "data.resultProjectPreviewUrl",
+            "payload": api.image.preview_url(res_project.reference_image_url, 100, 100),
         }
     ]
     api.task.set_fields(task_id, fields)
@@ -173,11 +180,10 @@ def main():
     data["resultProject"] = ""
 
     state["showWarningDialog"] = False
-    state["showFinishDialog"] = False
+    #state["showFinishDialog"] = False
 
     # Run application service
     my_app.run(data=data, state=state)
-    my_app.wait_all()
 
 
 if __name__ == "__main__":
