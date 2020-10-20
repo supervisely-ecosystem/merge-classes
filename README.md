@@ -21,7 +21,9 @@
 
 ## Overview 
 
-Sometimes class management (combining, mapping, handling class imbalance) can be tricky and time-consuming. App helps to merge classes with the same shapes.
+Sometimes class management (combining, mapping, handling class imbalance) can be tricky and time-consuming. App helps to merge classes with the same shapes. Let's consider several cases:
+
+1. **Combine class with the existing one**: for example you have two separate classes `Person` and `Bag`. You trained the model and you see that bags You need to map class `Bag` to class `Person`: all  
 
 
 ## How To Run
