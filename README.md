@@ -38,7 +38,7 @@ Go to "Context Menu" (images project or dataset) -> "Run App" -> "Transform" -> 
 ### Step 2:  Waiting until the app is started
 Once app is started, new task appear in workspace tasks. Wait message `Application is started ...` (1) and then press `Open` button (2).
 
-<img src="https://i.imgur.com/eeA4VMQ.png"/>
+<img src="https://i.imgur.com/uo1xJUJ.png"/>
 
 ### Step 3: Define transformations
 
