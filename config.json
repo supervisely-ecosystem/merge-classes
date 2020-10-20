@@ -3,7 +3,7 @@
   "type": "app",
   "categories": [
     "project classes",
-    "converter"
+    "transform"
   ],
   "description": "Merge multiple classes with same shape to a single one",
   "docker_image": "docker.deepsystems.io/supervisely/five/base-py-sdk-internal:apps2",
