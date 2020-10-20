@@ -52,16 +52,20 @@
                     <sly-icon slot="icon" :options="{ imageUrl: `${data.resultProjectPreviewUrl}` }"/>
                 </sly-field>
                 <el-progress v-if="data.started === true && data.progress !== 100" :percentage="data.progress"></el-progress>
+                <el-button type="primary" @click="command('convert')" v-if="data.started === false">
+                    <i class="zmdi zmdi-play" style="margin-right: 5px"></i> Run
+                </el-button>
+<!--        </div>
             </sly-card>
         </el-col>
     </el-row>
 
     <sly-card title="Merge classes" subtitle="Define how to merge one or several classes" style="margin-top: 10px">
-        <div slot="header">
-            <el-button type="primary" @click="command('convert')" :disabled="data.started === true">
-                <i class="zmdi zmdi-play" style="margin-right: 5px"></i> Run
-            </el-button>
-        </div>
+<!--        <div slot="header">-->
+<!--            <el-button type="primary" @click="command('convert')" :disabled="data.started === true">-->
+<!--                <i class="zmdi zmdi-play" style="margin-right: 5px"></i> Run-->
+<!--            </el-button>-->
+<!--        </div>-->
         <el-table class="ultra-table"
                   :data="data.table"
                   style="width: 100%"
