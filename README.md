@@ -26,7 +26,7 @@ Sometimes class management (combining, mapping, handling class imbalance) can be
 
 ## How To Run
 
-### Step 1: Run from context menu of project / dataset
+### Step 1: Run from context menu of project
 
 Go to "Context Menu" (images project or dataset) -> "Run App" -> "Transform" -> "Convert Class Shape"
 
