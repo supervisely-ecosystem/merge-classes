@@ -12,10 +12,10 @@
 </p>
 
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack) 
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/convert-class-shape)
-[![views](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-class-shape&counter=views&label=views)](https://supervise.ly)
-[![used by teams](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-class-shape&counter=runs&label=used%20by%20teams)](https://supervise.ly)
-[![runs](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/convert-class-shape&counter=downloads&label=runs&123)](https://supervise.ly)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/merge-classes)
+[![views](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/merge-classes&counter=views&label=views)](https://supervise.ly)
+[![used by teams](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/merge-classes&counter=runs&label=used%20by%20teams)](https://supervise.ly)
+[![runs](https://dev.supervise.ly/public/api/v3/ecosystem.counters?repo=supervisely-ecosystem/merge-classes&counter=downloads&label=runs&123)](https://supervise.ly)
 
 </div>
 
