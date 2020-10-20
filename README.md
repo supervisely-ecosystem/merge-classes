@@ -20,18 +20,8 @@
 </div>
 
 ## Overview 
-It is often needed to convert labeled objects from one geometry to another while doing computer vision reseach. There are huge number of scenarious , here are some examples:
-- you labeled data with polygons to train semantic segmentation model, and then you decided to try detection model. Therefore you have to convert your labels from polygons to rectangles (bounding boxes)
-- or you applied neural network to images and it produced pre-annotations as bitmaps (masks). Then you want to transform them to polygons for manual correction.
 
-This app covers following transformations:
-- from `Bitmap` to `Polygon`, `Rectangle` and `AnyShape`
-- from `Polygon` to `Rectangle`, `Bitmap` and `AnyShape`
-- from `Polyline` to `Rectangle`, `Bitmap`, `Polygon`, `AnyShape`
-- from `Rectangle` to `Polygon`, `Bitmap` and `AnyShape`
-- from `Graph` (i.e. `Keypoints`) to `Rectangle` and `AnyShape`
-- from `Point` to `AnyShape`
-- `Cuboid`, `Cuboid3d`, `Pointcloud` (segmentation of point clouds), `Point3d` are not supported yet (send us a feature request if you need it)
+Sometimes class management (combining, mapping, handling class imbalance) can be tricky and time-consuming. App helps to merge classes with the same shapes.
 
 
 ## How To Run
@@ -40,7 +30,7 @@ This app covers following transformations:
 
 Go to "Context Menu" (images project or dataset) -> "Run App" -> "Transform" -> "Convert Class Shape"
 
-<img src="https://i.imgur.com/6jVrnAK.png" width="600"/>
+<img src="https://i.imgur.com/9fFK4KG.png" width="600"/>
 
 ### Step 2:  Waiting until the app is started
 Once app is started, new task appear in workspace tasks. Wait message `Application is started ...` (1) and then press `Open` button (2).
