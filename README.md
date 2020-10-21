@@ -60,16 +60,10 @@ App creates new project and it will appear in `Output` section. Result project n
 
 ### Step 5: App shuts down automatically
 
-Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to check Input project, list of applied transformations and Output project. 
+Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to view all information about a task: Input project, list of applied transformations and Output project. 
 
 ## Explanation
     
 - Result project name = original name + "(new shapes)" suffix
 
 - Your data is safe: app creates new project with modified classes and objects. The original project remains unchanged
-
-- Before converting `AnyShape` classes, you have to unpack it with another app - [Unpack Anyshape](https://github.com/supervisely-ecosystem/unpack-anyshape) 
-
-- Colors of new classes will be generated randomly
-
-- Note: transformation from raster (bitmap) to vector (polygon) will result in huge number of points. App performs approximation to reduce the number. That can lead to slight loss of accuracy at borders. Special settings to control approximation will be released in next version.
