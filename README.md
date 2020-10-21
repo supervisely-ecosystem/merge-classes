@@ -8,7 +8,7 @@
 
   <a href="#Overview">Overview</a> •
   <a href="#How-To-Run">How To Run</a> •
-  <a href="#Explanation">Explanation</a>
+  <a href="#Notes">Notes</a>
 </p>
 
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervise.ly/slack) 
@@ -62,7 +62,7 @@ App creates new project and it will appear in `Output` section. Result project n
 
 Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to view all information about a task: Input project, list of applied transformations and Output project. 
 
-## Explanation
+## Notes
     
 - Result project name = original name + "(new shapes)" suffix
 
