@@ -60,7 +60,7 @@ Press `Run` button. The progress bas will appear in `Output` section. Also you c
 
 App creates new project and it will appear in `Output` section. Result project name = original name + "(new shapes)" suffix.
 
-<img src="https://i.imgur.com/79HnmH0.png" width="450"/>
+<img src="https://i.imgur.com/rmAzI1G.png" width="450"/>
 
 ### Step 5: App shuts down automatically
 
