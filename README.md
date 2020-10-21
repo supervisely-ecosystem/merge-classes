@@ -1,6 +1,6 @@
 <div align="center" markdown> 
 
-<img src="https://hotpot.ai/designs/thumbnails/chrome-promotional-marquee/12.jpg"/>
+<img src="https://i.imgur.com/I90R5bA.png"/>
 
 # Merge Classes
   
