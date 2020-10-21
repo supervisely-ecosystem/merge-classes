@@ -1,6 +1,6 @@
 <div align="center" markdown> 
 
-<img src="https://i.imgur.com/v1YwthJ.png"/>
+<img src="https://i.imgur.com/CdTLI9w.png"/>
 
 # Merge Classes
   
