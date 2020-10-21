@@ -58,10 +58,10 @@ Press `Run` button. The progress bas will appear in `Output` section. Also you c
 
 <img src="https://i.imgur.com/rCNNniF.png" width="450"/>
 
-App creates new project and it will appear in `Output` section. Result project name = original name + "(new shapes)" suffix.
+App creates new project and it will appear in `Output` section. Result project name = original name + "(merged classes)" suffix
 
 <img src="https://i.imgur.com/rmAzI1G.png" width="450"/>
 
 ### Step 5: App shuts down automatically
 
-Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to view all information about a task: Input project, list of applied transformations and Output project. 
+Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to view all information about a task: Input project, mapping settings and Output project. 
