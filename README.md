@@ -44,13 +44,13 @@ Once app is started, new task appear in workspace tasks. Wait message `Applicati
 
 <img src="https://i.imgur.com/uo1xJUJ.png"/>
 
-### Step 3: Define transformations
+### Step 3: Define mapping
 
 App contains 3 sections: information about input project, information about output and the list of all classes from input project. In column `CONVERT TO` there are dropdown lists in front of each class (row of the table). You have to define transformations for classes of interest. 
 
 Default `remain unchanged` option is selected and means that class and all its objects will be copied without modification to a new project. Dropdown lists only contain allowed shapes (see <a href="#Overview">Overview</a>), for example `Rectangle` can not be transformed to `Polyline` or `Point`. 
 
-<img src="https://i.imgur.com/mssxns3.png"/>
+<img src="https://i.imgur.com/L9MSbLd.png"/>
 
 ### Step 4: Press RUN button and wait
 
