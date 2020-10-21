@@ -27,7 +27,7 @@ Sometimes class management (combining, mapping, handling class imbalance) can be
 2. **Map one or several classes to a new one**: first, you have to create new class (on `Project`->`Classes` page) and then follow steps from (<a href="#How-To-Run">How To Run</a> section).
 
 Notes:
-- Result project name = original name + "(new shapes)" suffix
+- Result project name = original name + "(merged classes)" suffix
 - Your data is safe: app creates new project with modified classes and objects. The original project remains unchanged
 
 
