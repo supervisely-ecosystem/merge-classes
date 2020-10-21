@@ -21,10 +21,14 @@
 
 ## Overview 
 
-Sometimes class management (combining, mapping, handling class imbalance) can be tricky and time-consuming. App helps to merge classes with the same shapes. Let's consider several cases:
+Sometimes class management (combining, mapping, handling class imbalance) can be tricky and time-consuming. This App helps to merge classes with the same shapes. Let's consider several cases:
 
 1. **Map one or several classes to the existing one**: all objects will be assigned to destination class and the source class will be removed from project. Follow steps from (<a href="#How-To-Run">How To Run</a> section) 
 2. **Map one or several classes to a new one**: first, you have to create new class (on `Project`->`Classes` page) and then follow steps from (<a href="#How-To-Run">How To Run</a> section).
+
+Notes:
+- Result project name = original name + "(new shapes)" suffix
+- Your data is safe: app creates new project with modified classes and objects. The original project remains unchanged
 
 
 ## How To Run
@@ -61,9 +65,3 @@ App creates new project and it will appear in `Output` section. Result project n
 ### Step 5: App shuts down automatically
 
 Even if app is finished, you can always use it as a history: open it from tasks list in `Read Only` mode to view all information about a task: Input project, list of applied transformations and Output project. 
-
-## Notes
-    
-- Result project name = original name + "(new shapes)" suffix
-
-- Your data is safe: app creates new project with modified classes and objects. The original project remains unchanged
