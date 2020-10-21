@@ -6,7 +6,7 @@
     "transform"
   ],
   "description": "Merge multiple classes with same shape to a single one",
-  "docker_image": "docker.deepsystems.io/supervisely/five/base-py-sdk-internal:apps2",
+  "docker_image": "supervisely/base-py-sdk:6",
   "main_script": "src/merge_classes.py",
   "gui_template": "src/gui.html",
   "modal_template": "src/modal.html",
