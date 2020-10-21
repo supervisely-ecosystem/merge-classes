@@ -31,7 +31,7 @@ Sometimes class management (combining, mapping, handling class imbalance) can be
 
 ### Step 1: Run from context menu of project
 
-Go to "Context Menu" (images project or dataset) -> "Run App" -> "Transform" -> "Merge Classes"
+Go to "Context Menu" (images project) -> "Run App" -> "Transform" -> "Merge Classes"
 
 <img src="https://i.imgur.com/9fFK4KG.png" width="600"/>
 
