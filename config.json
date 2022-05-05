@@ -15,7 +15,10 @@
   "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
   "icon_background": "#FFFFFF",
   "context_menu": {
-    "target": ["images_project"],
+    "target": [
+      "images_project"
+    ],
     "context_category": "Transform"
-  }
+  },
+  "poster": "https://i.imgur.com/CdTLI9w.png"
 }
