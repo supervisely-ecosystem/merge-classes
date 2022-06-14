@@ -1,7 +1,8 @@
 import os
-import supervisely_lib as sly
+import supervisely as sly
+from supervisely.app.v1.app_service import AppService
 
-my_app = sly.AppService()
+my_app: AppService = AppService()
 
 TEAM_ID = int(os.environ['context.teamId'])
 WORKSPACE_ID = int(os.environ['context.workspaceId'])
@@ -121,7 +122,8 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
         return
 
     dst_name = src_project.name if _SUFFIX in src_project.name else src_project.name + _SUFFIX
-    dst_project = api.project.create(src_project.workspace_id, dst_name, description=_SUFFIX, change_name_if_conflict=True)
+    dst_project = api.project.create(src_project.workspace_id, dst_name, description=_SUFFIX,
+                                     change_name_if_conflict=True)
     sly.logger.info('Destination project is created.',
                     extra={'project_id': dst_project.id, 'project_name': dst_project.name})
     api.project.update_meta(dst_project.id, dst_meta.to_json())
@@ -180,7 +182,7 @@ def main():
     data["resultProject"] = ""
 
     state["showWarningDialog"] = False
-    #state["showFinishDialog"] = False
+    # state["showFinishDialog"] = False
 
     # Run application service
     my_app.run(data=data, state=state)
