@@ -36,12 +36,12 @@ Notes:
 
 Go to "Context Menu" (images project) -> "Run App" -> "Transform" -> "Merge Classes"
 
-<img src="https://i.imgur.com/9fFK4KG.png" width="600"/>
+<img src="media/htr1.png" width="600"/>
 
 ### Step 2:  Waiting until the app is started
 Once app is started, new task appear in workspace tasks. Wait message `Application is started ...` (1) and then press `Open` button (2).
 
-<img src="https://i.imgur.com/uo1xJUJ.png"/>
+<img src="media/htr2.png"/>
 
 ### Step 3: Define mapping
 
@@ -49,17 +49,17 @@ App contains 3 sections: information about input project, information about outp
 
 Default `remain unchanged` option is selected and means that class and all its objects will be copied without modification to a new project. Dropdown lists only contain allowed shapes (see <a href="#Overview">Overview</a>), for example `Rectangle` can not be transformed to `Polyline` or `Point`. 
 
-<img src="https://i.imgur.com/L9MSbLd.png"/>
+<img src="media/htr3.png"/>
 
 ### Step 4: Press RUN button and wait
 
 Press `Run` button. The progress bas will appear in `Output` section. Also you can monitor progress from tasks list of the current workspace.
 
-<img src="https://i.imgur.com/rCNNniF.png" width="450"/>
+<img src="media/htr4.png" width="450"/>
 
 App creates new project and it will appear in `Output` section. Result project name = original name + "(merged classes)" suffix
 
-<img src="https://i.imgur.com/rmAzI1G.png" width="450"/>
+<img src="media/htr4a.png" width="450"/>
 
 ### Step 5: App shuts down automatically
 
