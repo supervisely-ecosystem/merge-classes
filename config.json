@@ -1,26 +1,26 @@
 {
-  "name": "Merge classes",
-  "type": "app",
-  "categories": [
-    "images",
-    "annotation transformation",
-    "data operations"
-  ],
-  "description": "Merge multiple classes with same shape to a single one",
-  "docker_image": "supervisely/base-py-sdk:6.72.55",
-  "instance_version": "6.4.57",
-  "main_script": "src/merge_classes.py",
-  "gui_template": "src/gui.html",
-  "modal_template": "src/modal.html",
-  "task_location": "workspace_tasks",
-  "isolate": true,
-  "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
-  "icon_background": "#FFFFFF",
-  "context_menu": {
-    "target": [
-      "images_project"
+    "name": "Merge classes",
+    "type": "app",
+    "categories": [
+        "images",
+        "annotation transformation",
+        "data operations"
     ],
-    "context_category": "Transform"
-  },
-  "poster": "https://user-images.githubusercontent.com/106374579/182827229-8abac08f-8404-4e38-9700-715ccd724995.png"
+    "description": "Merge multiple classes with same shape to a single one",
+    "docker_image": "supervisely/base-py-sdk:6.72.81",
+    "instance_version": "6.4.57",
+    "main_script": "src/merge_classes.py",
+    "gui_template": "src/gui.html",
+    "modal_template": "src/modal.html",
+    "task_location": "workspace_tasks",
+    "isolate": true,
+    "icon": "https://img.icons8.com/color/96/000000/merge-files.png",
+    "icon_background": "#FFFFFF",
+    "context_menu": {
+        "target": [
+            "images_project"
+        ],
+        "context_category": "Transform"
+    },
+    "poster": "https://user-images.githubusercontent.com/106374579/182827229-8abac08f-8404-4e38-9700-715ccd724995.png"
 }
