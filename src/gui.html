@@ -60,10 +60,21 @@
     </el-row>
 
     <sly-card title="Merge classes" subtitle="Define how to merge one or several classes" style="margin-top: 10px">
+        <el-checkbox v-model="state.mergeAll" @change="command('mergeAll')">Merge all classes into one</el-checkbox><br>
+        <el-select v-if="state.mergeAll === true" @change="command('mergeAllClassSelected')" v-model="state.mergeAllWith" placeholder="Select a class to merge with">
+            <el-option
+                    v-for="item in data.table"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name">
+            </el-option>
+        </el-select>
         <el-table class="ultra-table"
                   :data="data.table"
                   style="width: 100%"
-                  :default-sort="{prop: 'name', order: 'ascending'}">
+                  :default-sort="{prop: 'name', order: 'ascending'}"
+                  v-if="state.mergeAll !== true">
+                  >
             <el-table-column prop="name" label="Name" sortable width="180"></el-table-column>
             <el-table-column prop="color" label="Color" width="180">
                 <template slot-scope="{ row }">
