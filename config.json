@@ -1,6 +1,7 @@
 {
     "name": "Merge classes",
     "type": "app",
+    "version": "2.0.0",
     "categories": [
         "images",
         "annotation transformation",
