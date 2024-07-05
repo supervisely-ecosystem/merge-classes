@@ -181,8 +181,18 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
     total_progress = api.project.get_images_count(src_project.id)
     current_progress = 0
     ds_progress = sly.Progress("Processing:", total_cnt=total_progress)
-    for ds_info in api.dataset.get_list(src_project.id):
-        dst_dataset = api.dataset.create(dst_project.id, ds_info.name)
+    dataset_map = {}
+    for parents, ds_info in api.dataset.tree(src_project.id):
+        if len(parents) > 0:
+            parent = f"{os.path.sep}".join(parents)
+            parent_id = dataset_map.get(parent)
+        else:
+            parent = ""
+            parent_id = None
+        dst_dataset = api.dataset.create(
+            dst_project.id, ds_info.name, parent_id=parent_id
+        )
+        dataset_map[os.path.join(parent, dst_dataset.name)] = dst_dataset.id
         img_infos_all = api.image.get_list(ds_info.id)
 
         for img_infos in sly.batched(img_infos_all):
