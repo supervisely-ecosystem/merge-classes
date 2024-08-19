@@ -2,6 +2,7 @@ import os
 import supervisely as sly
 from supervisely.app.v1.app_service import AppService
 from dotenv import load_dotenv
+import workflow as w
 
 load_dotenv("debug.env")
 
@@ -136,6 +137,7 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
             )
         )
 
+    w.workflow_input(api, src_project.id)
     src_meta_json = api.project.get_meta(src_project.id)
     src_meta = sly.ProjectMeta.from_json(src_meta_json)
 
@@ -218,7 +220,7 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
             ds_progress.iters_done_report(len(img_infos))
 
     api.task.set_output_project(task_id, dst_project.id, dst_project.name)
-
+    w.workflow_output(api, dst_project.id)
     # to get correct "reference_image_url"
     res_project = api.project.get_info_by_id(dst_project.id)
     fields = [
