@@ -1,0 +1,11 @@
+{
+    "image": "supervisely/data-operations:6.73.182",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.black-formatter"
+            ]
+        }
+    }
+}

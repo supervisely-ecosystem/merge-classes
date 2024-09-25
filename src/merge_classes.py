@@ -88,7 +88,55 @@ def convert_annotation(ann: sly.Annotation, dst_meta, selectors):
         if dst_name == REMAIN_UNCHANGED:
             new_labels.append(lbl)
         else:
-            new_labels.append(lbl.clone(obj_class=dst_meta.get_obj_class(dst_name)))
+            if not isinstance(lbl.geometry, sly.GraphNodes):
+                new_labels.append(lbl.clone(obj_class=dst_meta.get_obj_class(dst_name)))
+            else:
+                # get original and destination geometry configs
+                dst_obj_class = dst_meta.get_obj_class(dst_name)
+                orig_obj_class = lbl.obj_class
+                dst_geometry_config = dst_obj_class.geometry_config
+                orig_geometry_config = orig_obj_class.geometry_config
+                # check if geometry configs have the same number of nodes
+                if len(dst_geometry_config["nodes"]) != len(
+                    orig_geometry_config["nodes"]
+                ):
+                    raise ValueError(
+                        "Graph templates contain different number of templates, "
+                        "but only keypoint classes with the same number of nodes can be merged"
+                    )
+                dst_node_labels = [
+                    value["label"] for value in dst_geometry_config["nodes"].values()
+                ]
+                orig_node_labels = [
+                    value["label"] for value in orig_geometry_config["nodes"].values()
+                ]
+                # check if geometry configs have the same node labels
+                if set(dst_node_labels) != set(orig_node_labels):
+                    raise ValueError(
+                        "Graph templates have different node labels, "
+                        "but only keypoint classes with the same node labels can be merged"
+                    )
+                else:
+                    # create dictionary to match original labels by node ids
+                    orig_node_id2label = {}
+                    for node_id, node in orig_geometry_config["nodes"].items():
+                        orig_node_id2label[node_id] = node["label"]
+                    # create dictionary to get destination node_ids by labels
+                    dst_label2_node_id = {}
+                    for node_id, node in dst_geometry_config["nodes"].items():
+                        dst_label2_node_id[node["label"]] = node_id
+                    # create new nodes dictioanry with destination node ids and original nodes
+                    orig_geometry = lbl.geometry
+                    orig_nodes = orig_geometry.nodes
+                    new_nodes = {}
+                    for node_id, node in orig_nodes.items():
+                        orig_node_label = orig_node_id2label[node_id]
+                        dst_node_id = dst_label2_node_id[orig_node_label]
+                        new_nodes[dst_node_id] = node
+                    new_geometry = sly.GraphNodes(new_nodes)
+                    new_label = sly.Label(new_geometry, dst_obj_class)
+                    new_labels.append(new_label)
+
     return ann.clone(labels=new_labels)
 
 
