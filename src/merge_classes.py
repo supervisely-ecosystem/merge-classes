@@ -82,6 +82,7 @@ def init_data_and_state(api: sly.Api):
 
 
 def convert_annotation(ann: sly.Annotation, dst_meta, selectors):
+    assert selectors is not None, RuntimeError("Error while getting selectors. Please contact support.")
     new_labels = []
     for lbl in ann.labels:
         dst_name = selectors[lbl.obj_class.name]
@@ -192,6 +193,7 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
     dst_meta = src_meta.clone(obj_classes=sly.ObjClassCollection())
     need_action = False
     selectors = state["selectors"] if not merge_all else merge_all_with
+    assert selectors is not None, RuntimeError("Error while getting selectors. Try selecting a class to merge with before running.")
     for cls in src_meta.obj_classes:
         dst_name = selectors[cls.name]
         if dst_name == REMAIN_UNCHANGED:
