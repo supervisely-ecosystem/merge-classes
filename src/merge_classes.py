@@ -3,6 +3,14 @@ import supervisely as sly
 from supervisely.app.v1.app_service import AppService
 from dotenv import load_dotenv
 import workflow as w
+from core.merge import (
+    REMAIN_UNCHANGED,
+    build_destination_meta,
+    convert_annotation,
+    destination_name,
+    has_changes,
+    merge_targets,
+)
 
 load_dotenv("debug.env")
 
@@ -13,9 +21,6 @@ WORKSPACE_ID = int(os.environ["context.workspaceId"])
 PROJECT_ID = int(os.environ["modal.state.slyProjectId"])
 
 ORIGINAL_META = None
-REMAIN_UNCHANGED = "remain unchanged"
-
-_SUFFIX = "(merged classes)"
 
 SHAPE_TO_ICON = {
     sly.Rectangle: {"icon": "zmdi zmdi-crop-din", "color": "#ea9d22", "bg": "#fcefd9"},
@@ -44,6 +49,7 @@ def init_data_and_state(api: sly.Api):
     meta_json = api.project.get_meta(PROJECT_ID)
     ORIGINAL_META = sly.ProjectMeta.from_json(meta_json)
 
+    targets = merge_targets(ORIGINAL_META)
     for obj_class in ORIGINAL_META.obj_classes:
         row = {
             "name": obj_class.name,
@@ -53,16 +59,8 @@ def init_data_and_state(api: sly.Api):
         }
 
         possible_classes = [{"value": REMAIN_UNCHANGED, "label": REMAIN_UNCHANGED}]
-        for dest_class in ORIGINAL_META.obj_classes:
-            if (
-                obj_class.name == dest_class.name
-                or obj_class.geometry_type != dest_class.geometry_type
-            ):
-                continue
-            else:
-                possible_classes.append(
-                    {"value": dest_class.name, "label": dest_class.name}
-                )
+        for dest_name in targets[obj_class.name]:
+            possible_classes.append({"value": dest_name, "label": dest_name})
 
         sly.logger.debug("{!r} -> {}".format(obj_class.name, possible_classes))
 
@@ -79,74 +77,6 @@ def init_data_and_state(api: sly.Api):
         project.reference_image_url, 100, 100
     )
     return data, state
-
-
-def convert_annotation(ann: sly.Annotation, dst_meta, selectors):
-    assert selectors is not None, RuntimeError("Error while getting selectors. Please contact support.")
-    new_labels = []
-    for lbl in ann.labels:
-        dst_name = selectors[lbl.obj_class.name]
-        if dst_name == REMAIN_UNCHANGED:
-            new_labels.append(lbl)
-        else:
-            if isinstance(lbl.geometry, sly.GraphNodes):
-                # get original and destination geometry configs
-                dst_obj_class = dst_meta.get_obj_class(dst_name)
-                orig_obj_class = lbl.obj_class
-                dst_geometry_config = dst_obj_class.geometry_config
-                orig_geometry_config = orig_obj_class.geometry_config
-
-                dst_geom_nodes = dst_geometry_config.get("nodes", {})
-                orig_geom_nodes = orig_geometry_config.get("nodes", {})
-                if not dst_geom_nodes or not orig_geom_nodes:
-                    sly.logger.warning("One of the geometry configs does not have nodes")
-                    sly.logger.info(f"Destination geometry config: {dst_geometry_config}")
-                    sly.logger.info(f"Original geometry config: {orig_geometry_config}")
-
-                # check if geometry configs have the same number of nodes
-                if len(dst_geom_nodes) != len(
-                    orig_geom_nodes
-                ):
-                    raise ValueError(
-                        "Graph templates contain different number of templates, "
-                        "but only keypoint classes with the same number of nodes can be merged"
-                    )
-                dst_node_labels = [
-                    value["label"] for value in dst_geom_nodes.values()
-                ]
-                orig_node_labels = [
-                    value["label"] for value in orig_geom_nodes.values()
-                ]
-                # check if geometry configs have the same node labels
-                if set(dst_node_labels) != set(orig_node_labels):
-                    raise ValueError(
-                        "Graph templates have different node labels, "
-                        "but only keypoint classes with the same node labels can be merged"
-                    )
-                else:
-                    # create dictionary to match original labels by node ids
-                    orig_node_id2label = {}
-                    for node_id, node in orig_geom_nodes.items():
-                        orig_node_id2label[node_id] = node["label"]
-                    # create dictionary to get destination node_ids by labels
-                    dst_label2_node_id = {}
-                    for node_id, node in dst_geom_nodes.items():
-                        dst_label2_node_id[node["label"]] = node_id
-                    # create new nodes dictioanry with destination node ids and original nodes
-                    orig_geometry = lbl.geometry
-                    orig_nodes = orig_geometry.nodes
-                    new_nodes = {}
-                    for node_id, node in orig_nodes.items():
-                        orig_node_label = orig_node_id2label[node_id]
-                        dst_node_id = dst_label2_node_id[orig_node_label]
-                        new_nodes[dst_node_id] = node
-                    new_geometry = sly.GraphNodes(new_nodes)
-                    new_label = sly.Label(new_geometry, dst_obj_class)
-                    new_labels.append(new_label)
-            else:
-                new_labels.append(lbl.clone(obj_class=dst_meta.get_obj_class(dst_name)))
-
-    return ann.clone(labels=new_labels)
 
 
 merge_all = False
@@ -198,19 +128,10 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
     src_meta_json = api.project.get_meta(src_project.id)
     src_meta = sly.ProjectMeta.from_json(src_meta_json)
 
-    dst_meta = src_meta.clone(obj_classes=sly.ObjClassCollection())
-    need_action = False
     selectors = state["selectors"] if not merge_all else merge_all_with
     assert selectors is not None, RuntimeError("Error while getting selectors. Try selecting a class to merge with before running.")
-    for cls in src_meta.obj_classes:
-        dst_name = selectors[cls.name]
-        if dst_name == REMAIN_UNCHANGED:
-            dst_cls = cls.clone()
-        else:
-            need_action = True
-            dst_cls = src_meta.get_obj_class(dst_name).clone()
-        if dst_meta.get_obj_class(dst_cls.name) is None:
-            dst_meta = dst_meta.add_obj_class(dst_cls)
+    dst_meta = build_destination_meta(src_meta, selectors)
+    need_action = has_changes(selectors)
 
     if need_action is False:
         fields = [
@@ -223,13 +144,10 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
         api.task.set_fields(task_id, fields)
         return
 
-    dst_name = (
-        src_project.name if _SUFFIX in src_project.name else src_project.name + _SUFFIX
-    )
     dst_project = api.project.create(
         src_project.workspace_id,
-        dst_name,
-        description=_SUFFIX,
+        destination_name(src_project.name),
+        description="(merged classes)",
         change_name_if_conflict=True,
     )
     sly.logger.info(
