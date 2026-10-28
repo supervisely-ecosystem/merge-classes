@@ -183,3 +183,17 @@ def test_tags_limited_to_a_merged_class_now_apply_to_its_destination():
     assert dst.get_tag_meta("axles").applicable_classes == ["car"]
     assert dst.get_tag_meta("damaged").applicable_classes == ["car"]
     assert dst.get_tag_meta("seen").applicable_classes == []
+
+
+def test_a_class_added_after_the_app_was_opened_stays_unchanged():
+    late = sly.ObjClass("late", sly.Polygon)
+    meta = META.add_obj_class(late)
+    selectors = unchanged(truck="car")  # chosen on the page before 'late' existed
+    ann = sly.Annotation((10, 10), labels=[sly.Label(SQUARE, late), sly.Label(SQUARE, TRUCK)])
+
+    assert merge_problems(meta, selectors) == []
+    dst = build_destination_meta(meta, selectors)
+    new = convert_annotation(ann, dst, selectors)
+
+    assert [c.name for c in dst.obj_classes] == ["car", "box", "free", "late"]
+    assert [lbl.obj_class.name for lbl in new.labels] == ["late", "car"]

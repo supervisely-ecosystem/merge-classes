@@ -90,7 +90,7 @@ def build_destination_meta(src_meta: sly.ProjectMeta, selectors: Mapping[str, st
     """Source meta without the merged-away classes; tags and settings are kept."""
     dst_meta = src_meta.clone(obj_classes=sly.ObjClassCollection())
     for cls in src_meta.obj_classes:
-        dst_name = selectors[cls.name]
+        dst_name = selectors.get(cls.name, REMAIN_UNCHANGED)
         if dst_name == REMAIN_UNCHANGED:
             dst_cls = cls.clone()
         else:
@@ -117,7 +117,7 @@ def convert_annotation(ann: sly.Annotation, dst_meta: sly.ProjectMeta, selectors
     """Reassign the labels of merged classes to their destination class; other labels are kept."""
     new_labels = []
     for lbl in ann.labels:
-        dst_name = selectors[lbl.obj_class.name]
+        dst_name = selectors.get(lbl.obj_class.name, REMAIN_UNCHANGED)
         if dst_name == REMAIN_UNCHANGED:
             new_labels.append(lbl)
         elif isinstance(lbl.geometry, sly.GraphNodes):
