@@ -97,7 +97,20 @@ def build_destination_meta(src_meta: sly.ProjectMeta, selectors: Mapping[str, st
             dst_cls = src_meta.get_obj_class(dst_name).clone()
         if dst_meta.get_obj_class(dst_cls.name) is None:
             dst_meta = dst_meta.add_obj_class(dst_cls)
-    return dst_meta
+    return _retarget_tag_metas(dst_meta, selectors)
+
+
+def _retarget_tag_metas(meta: sly.ProjectMeta, selectors: Mapping[str, str]) -> sly.ProjectMeta:
+    """Tags limited to a merged-away class become applicable to its destination class instead."""
+    tag_metas = []
+    for tag_meta in meta.tag_metas:
+        names = tag_meta.applicable_classes
+        if names:
+            renamed = [selectors.get(n, REMAIN_UNCHANGED) for n in names]
+            renamed = [new if new != REMAIN_UNCHANGED else old for old, new in zip(names, renamed, strict=True)]
+            tag_meta = tag_meta.clone(applicable_classes=list(dict.fromkeys(renamed)))
+        tag_metas.append(tag_meta)
+    return meta.clone(tag_metas=sly.TagMetaCollection(tag_metas))
 
 
 def convert_annotation(ann: sly.Annotation, dst_meta: sly.ProjectMeta, selectors: Mapping[str, str]) -> sly.Annotation:

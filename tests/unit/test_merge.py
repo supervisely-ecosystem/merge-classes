@@ -171,3 +171,15 @@ def test_merge_all_into_an_any_shape_class_converts_every_shape():
         ("free", sly.Rectangle),
         ("free", sly.Point),
     ]
+
+
+def test_tags_limited_to_a_merged_class_now_apply_to_its_destination():
+    only_trucks = sly.TagMeta("axles", sly.TagValueType.ANY_NUMBER, applicable_classes=["truck"])
+    both = sly.TagMeta("damaged", sly.TagValueType.NONE, applicable_classes=["truck", "car"])
+    meta = META.add_tag_metas([only_trucks, both])
+
+    dst = build_destination_meta(meta, unchanged(meta, truck="car"))
+
+    assert dst.get_tag_meta("axles").applicable_classes == ["car"]
+    assert dst.get_tag_meta("damaged").applicable_classes == ["car"]
+    assert dst.get_tag_meta("seen").applicable_classes == []
