@@ -46,18 +46,23 @@ def merge_project(
     destination = platform_io.create_project(api, target_workspace, destination_name(project.name), destination_meta)
     sly.logger.info(f"Created project {destination.name!r} (id {destination.id})")
 
-    new_dataset_ids: dict[int, int] = {}
-    for dataset in parents_first(platform_io.list_datasets(api, project.id)):
-        parent_id = new_dataset_ids.get(dataset.parent_id) if dataset.parent_id is not None else None
-        new_dataset = platform_io.create_dataset(api, destination.id, dataset.name, parent_id)
-        new_dataset_ids[dataset.id] = new_dataset.id
+    try:
+        new_dataset_ids: dict[int, int] = {}
+        for dataset in parents_first(platform_io.list_datasets(api, project.id)):
+            parent_id = new_dataset_ids.get(dataset.parent_id) if dataset.parent_id is not None else None
+            new_dataset = platform_io.create_dataset(api, destination.id, dataset.name, parent_id)
+            new_dataset_ids[dataset.id] = new_dataset.id
 
-        images = platform_io.list_images(api, dataset.id)
-        for batch in sly.batched(images, BATCH_SIZE):
-            anns = platform_io.download_annotations(api, dataset.id, batch, meta)
-            merged = [convert_annotation(ann, destination_meta, selectors) for ann in anns]
-            platform_io.copy_images(api, new_dataset.id, batch, merged)
-            if progress is not None:
-                progress(len(batch))
+            images = platform_io.list_images(api, dataset.id)
+            for batch in sly.batched(images, BATCH_SIZE):
+                anns = platform_io.download_annotations(api, dataset.id, batch, meta)
+                merged = [convert_annotation(ann, destination_meta, selectors) for ann in anns]
+                platform_io.copy_images(api, new_dataset.id, batch, merged)
+                if progress is not None:
+                    progress(len(batch))
+    except BaseException:
+        # the project was created by this run and is incomplete: do not leave it looking like a result
+        platform_io.remove_incomplete_project(api, destination)
+        raise
 
     return platform_io.refresh_project(api, destination.id)

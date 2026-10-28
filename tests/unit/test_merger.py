@@ -24,7 +24,7 @@ def info(cls, **values):
 class FakeApi:
     """Project 10 in workspace 5: root "train" (2 images) with nested "hard" (1 image), root "empty"."""
 
-    def __init__(self, fail_upload_on_dataset=None):
+    def __init__(self, fail_upload_on_dataset: str | None = None):
         self._ids = itertools.count(1000)
         self.fail_upload_on_dataset = fail_upload_on_dataset
         self.source = info(sly.ProjectInfo, id=10, name="cars", workspace_id=5, type="images", items_count=3)
@@ -89,7 +89,7 @@ class FakeApi:
         return [NS(image_id=i, annotation=self.anns[i]) for i in reversed(image_ids)]  # order is not guaranteed
 
     def _upload_ids(self, dataset_id, names, ids, metas):
-        if dataset_id == self.fail_upload_on_dataset:
+        if any(d.id == dataset_id and d.name == self.fail_upload_on_dataset for d in self.created_datasets):
             raise ConnectionError("upload failed")
         new = [info(sly.ImageInfo, id=next(self._ids), name=n, dataset_id=dataset_id) for n in names]
         self.uploaded_images += [(dataset_id, n, i, m) for n, i, m in zip(names, ids, metas, strict=True)]
@@ -143,3 +143,14 @@ def test_output_workspace_can_be_redirected():
     result = merge_project(api, api.source, selectors(truck="car"), workspace_id=733)
 
     assert result.workspace_id == 733
+
+
+def test_a_failure_halfway_removes_the_incomplete_result_project():
+    api = FakeApi()
+    api.fail_upload_on_dataset = "hard"  # copied after "train"
+
+    with pytest.raises(ConnectionError):
+        merge_project(api, api.source, selectors(truck="car"))
+
+    assert len(api.uploaded_images) == 2  # "train" was already copied
+    assert api.removed_projects == [api.created_projects[0].id]

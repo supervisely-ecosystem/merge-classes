@@ -57,6 +57,17 @@ def copy_images(api: sly.Api, dataset_id: int, images: Sequence[sly.ImageInfo], 
     api.annotation.upload_anns([image.id for image in new_images], list(anns))
 
 
+def remove_incomplete_project(api: sly.Api, project: sly.ProjectInfo) -> None:
+    """Best effort: a failure here is logged, the original error is what the user must see."""
+    try:
+        api.project.remove(project.id)
+        sly.logger.warning(f"Run failed: removed the incomplete project {project.name!r} (id {project.id})")
+    except Exception:  # noqa: BLE001
+        sly.logger.warning(
+            f"Run failed and the incomplete project {project.name!r} (id {project.id}) could not be removed"
+        )
+
+
 def refresh_project(api: sly.Api, project_id: int) -> sly.ProjectInfo:
     """Project info after upload (the preview image is set only once the project has images)."""
     return api.project.get_info_by_id(project_id)
