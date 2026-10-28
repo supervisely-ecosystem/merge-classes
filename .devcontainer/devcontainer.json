@@ -1,5 +1,5 @@
 {
-    "image": "supervisely/data-operations:6.73.182",
+    "image": "supervisely/base-py-sdk-hardened:6.74.34",
     "customizations": {
         "vscode": {
             "extensions": [

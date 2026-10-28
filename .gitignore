@@ -1,3 +1,6 @@
 /secret_debug.env
 .venv
-supervisely
+supervisely__pycache__/
+.pytest_cache/
+.ruff_cache/
+debug/
