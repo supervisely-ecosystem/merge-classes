@@ -9,6 +9,7 @@ from core.merge import (
     convert_annotation,
     destination_name,
     has_changes,
+    merge_problems,
     merge_targets,
 )
 
@@ -130,6 +131,14 @@ def convert(api: sly.Api, task_id, context, state, app_logger):
 
     selectors = state["selectors"] if not merge_all else merge_all_with
     assert selectors is not None, RuntimeError("Error while getting selectors. Try selecting a class to merge with before running.")
+    problems = merge_problems(src_meta, selectors)
+    if problems:
+        # refuse before the destination project is created: nothing half-filled is left behind
+        my_app.show_modal_window(
+            "These classes cannot be merged, nothing was created:\n" + "\n".join(problems), level="error"
+        )
+        api.task.set_field(task_id, "data.started", False)
+        return
     dst_meta = build_destination_meta(src_meta, selectors)
     need_action = has_changes(selectors)
 

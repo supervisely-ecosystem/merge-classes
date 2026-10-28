@@ -10,6 +10,7 @@ from src.core.merge import (
     destination_name,
     has_changes,
     merge_all_selectors,
+    merge_problems,
     merge_targets,
 )
 
@@ -123,3 +124,50 @@ def test_merged_keypoints_keep_tags_description_and_binding():
 
     assert [t.name for t in new.tags] == ["seen"]
     assert (new.description, new.binding_key) == ("d", "g1")
+
+
+def test_merge_all_into_a_class_of_another_shape_is_refused_before_anything_is_created():
+    problems = merge_problems(META, merge_all_selectors(META, "car"))
+
+    assert problems == [
+        "box (rectangle) cannot be merged into car (polygon): shapes differ",
+        "free (any) cannot be merged into car (polygon): shapes differ",
+    ]
+
+
+def test_merge_all_into_an_any_shape_class_is_allowed_except_keypoints():
+    pose = keypoints_class("pose", ["nose"])
+    meta = META.add_obj_class(pose)
+
+    problems = merge_problems(meta, merge_all_selectors(meta, "free"))
+
+    assert problems == ["pose (graph) cannot be merged into free (any): shapes differ"]
+
+
+def test_keypoints_with_different_templates_are_not_offered_and_are_refused():
+    a = keypoints_class("pose_a", ["nose", "tail"])
+    b = keypoints_class("pose_b", ["nose", "ear"])
+    c = keypoints_class("pose_c", ["tail", "nose"])
+    meta = sly.ProjectMeta(obj_classes=[a, b, c])
+
+    assert merge_targets(meta) == {"pose_a": ["pose_c"], "pose_b": [], "pose_c": ["pose_a"]}
+    assert merge_problems(meta, unchanged(meta, pose_a="pose_b")) == [
+        "pose_a (graph) cannot be merged into pose_b (graph): keypoint templates differ"
+    ]
+    assert merge_problems(meta, unchanged(meta, pose_a="pose_c")) == []
+
+
+def test_merge_all_into_an_any_shape_class_converts_every_shape():
+    selectors = merge_all_selectors(META, "free")
+    assert merge_problems(META, selectors) == []
+    dst = build_destination_meta(META, selectors)
+    labels = [sly.Label(SQUARE, CAR), sly.Label(sly.Rectangle(0, 0, 2, 2), BOX), sly.Label(sly.Point(1, 1), FREE)]
+
+    new = convert_annotation(sly.Annotation((10, 10), labels=labels), dst, selectors)
+
+    assert [c.name for c in dst.obj_classes] == ["free"]
+    assert [(lbl.obj_class.name, type(lbl.geometry)) for lbl in new.labels] == [
+        ("free", sly.Polygon),
+        ("free", sly.Rectangle),
+        ("free", sly.Point),
+    ]
