@@ -92,4 +92,5 @@ def _remap_keypoints(lbl: sly.Label, dst_obj_class: sly.ObjClass) -> sly.Label:
     new_nodes = {}
     for node_id, node in lbl.geometry.nodes.items():
         new_nodes[dst_label2_node_id[orig_node_id2label[node_id]]] = node
-    return sly.Label(sly.GraphNodes(new_nodes), dst_obj_class)
+    # clone keeps the object's tags, description and binding key
+    return lbl.clone(geometry=sly.GraphNodes(new_nodes), obj_class=dst_obj_class)

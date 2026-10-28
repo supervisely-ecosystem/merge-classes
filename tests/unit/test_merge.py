@@ -106,3 +106,20 @@ def test_keypoints_are_remapped_by_node_label():
 
 def _rc(node):
     return node.location.row, node.location.col
+
+
+def test_merged_keypoints_keep_tags_description_and_binding():
+    src = keypoints_class("pose_a", ["nose", "tail"])
+    dst_class = keypoints_class("pose_b", ["nose", "tail"])
+    meta = sly.ProjectMeta(obj_classes=[src, dst_class], tag_metas=[SEEN])
+    selectors = unchanged(meta, pose_a="pose_b")
+    dst_meta = build_destination_meta(meta, selectors)
+    nodes = {i: sly.Node(sly.PointLocation(1, 1)) for i in src.geometry_config["nodes"]}
+    label = sly.Label(
+        sly.GraphNodes(nodes), src, tags=sly.TagCollection([sly.Tag(SEEN)]), description="d", binding_key="g1"
+    )
+
+    new = convert_annotation(sly.Annotation((10, 10), labels=[label]), dst_meta, selectors).labels[0]
+
+    assert [t.name for t in new.tags] == ["seen"]
+    assert (new.description, new.binding_key) == ("d", "g1")
