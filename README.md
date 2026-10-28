@@ -25,9 +25,14 @@ Sometimes class management (combining, mapping, handling class imbalance) can be
 1. **Map one or several classes to the existing one**: all objects will be assigned to destination class and the source class will be removed from project. Follow steps from (<a href="#How-To-Run">How To Run</a> section) 
 2. **Map one or several classes to a new one**: first, you have to create new class (on `Project`->`Classes` page) and then follow steps from (<a href="#How-To-Run">How To Run</a> section).
 
+3. **Merge all classes into one**: tick the checkbox and pick the class every other class is merged into.
+
 Notes:
 - Result project name = original name + "(merged classes)" suffix
 - Your data is safe: app creates new project with modified classes and objects. The original project remains unchanged
+- The dataset structure (including nested datasets), image names and image metadata are kept; objects keep their tags, descriptions and groups
+- A class can be merged into a class of the same shape, keypoint classes only into a keypoint class with the same node labels. With "Merge all classes into one" the chosen class must have the same shape as every other class, or be an `any` shape class (keypoints excepted). If some classes cannot be merged, the app lists them and creates nothing
+- Tags limited to a merged class become applicable to the class it was merged into
 
 
 ## How To Run
